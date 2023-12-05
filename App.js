@@ -1,82 +1,156 @@
-
-import './App.css';
-import Header from './components/Header';
-import ProductList from './components/ProductList';
-import CartList from './components/CartList';
-import { useState } from 'react';
-
-function App() {
-
-  const [product, setProduct] = useState([
-    {
-      url: 'https://www.plutosport.com/media/catalog/product/cache/ca568d9d1bcb9a930d0f954e2d7954a8/N/i/Nike-Air-Max-Alpha-Trainer-5-Sportschoen-Heren-2307311049.jpg',
-      name: 'Nike White Shoes',
-      category: 'Shoes',
-      seller: 'Nike',
-      price: 2000
-    },
-    {
-      url: 'https://5.imimg.com/data5/KC/PC/MY-38629861/dummy-chronograph-watch-500x500.jpg',
-      name: 'FastTrack Watch ',
-      category: 'Watches',
-      seller: 'FastTrack',
-      price: 2500
-    },
-    {
-      url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq39iB_cO6uhZ59vubrqVuYTJQH-4Qa0hU9g&usqp=CAU',
-      name: 'HP Laptop',
-      category: 'Laptops',
-      seller: 'HP',
-      price: 50000
-    },
-    {
-      url: 'https://www.sahivalue.com/product-images/14+pro+max.jpg/293890000021697778/400x400',
-      name: 'Iphone 14',
-      category: 'Mobile',
-      seller: 'Apple',
-      price: 74000
-    },
-    {
-      url: 'https://5.imimg.com/data5/BG/UM/MY-23375112/61.jpg',
-      name: 'Mens Tshirt',
-      category: 'Clothes',
-      seller: 'Puma',
-      price: 2000
-    },
-    {
-      url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9xzgtOpMxdpfgBOg3OKsEqYRkNBbuprJj4w&usqp=CAU',
-      name: 'Cup red Color',
-      category: 'Cup',
-      seller: 'ABS Ltd',
-      price: 100
-    },
-  ])
-
-  const [cart, setCart] = useState([])
-  const [showCart, setShowCart] = useState(false)
-
-  const addToCart = (data) => {
-    setCart([...cart, { ...data, quantity: 1 }])
-  }
-
-  const handleShow = (value) => {
-    setShowCart(value)
-  }
-
-  return (
-    <div>
-      <Header count={cart.length}
-        handleShow={handleShow} ></Header>
-
-      {
-        showCart ?
-          <CartList cart={cart} ></CartList> :
-          <ProductList product={product} addToCart={addToCart} ></ProductList>
-      }
-
-
-    </div>
-  );
-}
-
-export default App;
+import React, { Component } from "react"; 
+import "bootstrap/dist/css/bootstrap.css"; 
+import Container from "react-bootstrap/Container"; 
+import Row from "react-bootstrap/Row"; 
+import Col from "react-bootstrap/Col"; 
+import Button from "react-bootstrap/Button"; 
+import InputGroup from "react-bootstrap/InputGroup"; 
+import FormControl from "react-bootstrap/FormControl"; 
+import ListGroup from "react-bootstrap/ListGroup"; 
+  
+class App extends Component { 
+    constructor(props) { 
+        super(props); 
+  
+        // Setting up state 
+        this.state = { 
+            userInput: "", 
+            list: [], 
+        }; 
+    } 
+  
+    // Set a user input value 
+    updateInput(value) { 
+        this.setState({ 
+            userInput: value, 
+        }); 
+    } 
+  
+    // Add item if user input in not empty 
+    addItem() { 
+        if (this.state.userInput !== "") { 
+            const userInput = { 
+                // Add a random id which is used to delete 
+                id: Math.random(), 
+  
+                // Add a user value to list 
+                value: this.state.userInput, 
+            }; 
+  
+            // Update list 
+            const list = [...this.state.list]; 
+            list.push(userInput); 
+  
+            // reset state 
+            this.setState({ 
+                list, 
+                userInput: "", 
+            }); 
+        } 
+    } 
+  
+    // Function to delete item from list use id to delete 
+    deleteItem(key) { 
+        const list = [...this.state.list]; 
+  
+        // Filter values and leave value which we need to delete 
+        const updateList = list.filter((item) => item.id !== key); 
+  
+        // Update list in state 
+        this.setState({ 
+            list: updateList, 
+        }); 
+    } 
+  
+    editItem = (index) => { 
+      const todos = [...this.state.list]; 
+      const editedTodo = prompt('Edit the todo:'); 
+      if (editedTodo !== null && editedTodo.trim() !== '') { 
+        let updatedTodos = [...todos] 
+        updatedTodos[index].value= editedTodo 
+        this.setState({ 
+          list: updatedTodos, 
+      }); 
+      } 
+    } 
+  
+    render() { 
+        return ( 
+            <Container> 
+                <Row 
+                    style={{ 
+                        display: "flex", 
+                        justifyContent: "center", 
+                        alignItems: "center", 
+                        fontSize: "3rem", 
+                        fontWeight: "bolder", 
+                    }} 
+                > 
+                    TODO LIST 
+                </Row> 
+  
+                <hr /> 
+                <Row> 
+                    <Col md={{ span: 5, offset: 4 }}> 
+                        <InputGroup className="mb-3"> 
+                            <FormControl 
+                                placeholder="add item . . . "
+                                size="lg"
+                                value={this.state.userInput} 
+                                onChange={(item) => 
+                                    this.updateInput(item.target.value) 
+                                } 
+                                aria-label="add something"
+                                aria-describedby="basic-addon2"
+                            /> 
+                            <InputGroup> 
+                                <Button 
+                                    variant="dark"
+                                    className="mt-2"
+                                    onClick={() => this.addItem()} 
+                                > 
+                                    ADD 
+                                </Button> 
+                            </InputGroup> 
+                        </InputGroup> 
+                    </Col> 
+                </Row> 
+                <Row> 
+                    <Col md={{ span: 5, offset: 4 }}> 
+                        <ListGroup> 
+                            {/* map over and print items */} 
+                            {this.state.list.map((item, index) => { 
+                                return ( 
+                                  <div key = {index} >  
+                                    <ListGroup.Item 
+                                        variant="dark"
+                                        action 
+                                        style={{display:"flex", 
+                                                justifyContent:'space-between'
+                                      }} 
+                                    > 
+                                        {item.value} 
+                                        <span> 
+                                        <Button style={{marginRight:"10px"}} 
+                                        variant = "light"
+                                        onClick={() => this.deleteItem(item.id)}> 
+                                          Delete 
+                                        </Button> 
+                                        <Button variant = "light"
+                                        onClick={() => this.editItem(index)}> 
+                                          Edit 
+                                        </Button> 
+                                        </span> 
+                                    </ListGroup.Item> 
+                                  </div> 
+                                ); 
+                            })} 
+                        </ListGroup> 
+                    </Col> 
+                </Row> 
+            </Container> 
+        ); 
+    } 
+} 
+  
+export default App; 
